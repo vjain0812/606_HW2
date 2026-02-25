@@ -24,8 +24,42 @@ class HomeWork2:
     #     3   4
 
     def constructBinaryTree(self, input) -> TreeNode:
-        pass
+        # Set with valid operators
+        operators = {"+", "-", "*", "/"}
+        
+        stack = []
 
+        for token in input:
+            # Checks if it is operand, creates node and push in stack
+            if token not in operators:
+                # Validate numeric token
+                try:
+                    int(token)
+                except ValueError:
+                    raise ValueError("Invalid token in expression")
+
+                node = TreeNode(token)
+                stack.append(node)
+
+            else:
+                # checks for >= operands
+                if len(stack) < 2:
+                    raise ValueError("Invalid postfix expression")
+
+                right = stack.pop()
+                left = stack.pop()
+
+                node = TreeNode(token)
+                node.left = left
+                node.right = right
+
+                stack.append(node)
+
+        # ensures only one root element remains 
+        if len(stack) != 1:
+            raise ValueError("Invalid postfix expression")
+
+        return stack[0]
 
 
     # Problem 2.1: Use pre-order traversal (root, left, right) to generate prefix notation
