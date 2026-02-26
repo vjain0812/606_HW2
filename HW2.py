@@ -119,7 +119,19 @@ class HomeWork2:
     # you can see the examples in p2_traversals.csv
 
     def postfixNotationPrint(self, head: TreeNode) -> list:
-        pass
+        if head is None:
+            return []
+
+        result = []
+
+        def postorder(node):
+            if node:
+                postorder(node.left)
+                postorder(node.right)
+                result.append(node.val)
+
+        postorder(head)
+        return result
 
 
 class Stack:
@@ -133,8 +145,35 @@ class Stack:
 
     def __init__(self):
         # TODO: initialize the stack
-        pass
+        # underlying storage
+        self.data = []
+        # index of last element = top pointer
+        self.top = -1
 
+    # Push func
+    def push(self, value):
+        self.data.append(value)
+        self.top += 1
+
+    # Pop func
+    def pop(self):
+        if self.isEmpty():
+            raise ValueError("Stack underflow - malformed expression")
+        value = self.data[self.top]
+        self.data.pop()
+        self.top -= 1
+        return value
+
+    # Peek func
+    def peek(self):
+        if self.isEmpty():
+            raise ValueError("Stack is empty")
+        return self.data[self.top]
+
+    # Checks for empty stack
+    def isEmpty(self):
+        return self.top == -1
+    
     # Problem 3: Write code to evaluate a postfix expression using stack and return the integer value
     # Use stack which you implemented above for this problem
 
@@ -148,10 +187,56 @@ class Stack:
 
     # DO NOT USE EVAL function for evaluating the expression
 
-    def evaluatePostfix(exp: str) -> int:
+    def evaluatePostfix(self, exp: str) -> int:
         # TODO: implement this using your Stack class
-        pass
 
+        if not exp or exp.strip() == "":
+            raise ValueError("Empty postfix expression")
+
+        tokens = exp.split()
+        operators = {"+", "-", "*", "/"}
+
+        for token in tokens:
+
+            # check if token -> operator
+            if token in operators:
+
+                # needs at least two operands
+                if self.top < 1:
+                    raise ValueError("Malformed postfix expression")
+
+                right = self.pop()
+                left = self.pop()
+
+                # operation
+                if token == "+":
+                    result = left + right
+                elif token == "-":
+                    result = left - right
+                elif token == "*":
+                    result = left * right
+                elif token == "/":
+                    if right == 0:
+                        raise ZeroDivisionError("Division by zero")
+                    # integer division
+                    result = int(left / right)
+
+                self.push(result)
+
+            else:
+                # Operand -> valid integer
+                try:
+                    value = int(token)
+                except ValueError:
+                    raise ValueError(f"Invalid token: {token}")
+
+                self.push(value)
+
+        # post eval, one result remains
+        if self.top != 0:
+            raise ValueError("Malformed postfix expression")
+
+        return self.pop()
 
 # Main Function. Do not edit the code below
 if __name__ == "__main__":
