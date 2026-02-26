@@ -302,3 +302,6 @@ if __name__ == "__main__":
         except ZeroDivisionError:
             assert expected == "DIVZERO", f"Test {idx} unexpected division by zero"
             print(f"Test case {idx} passed (division by zero handled)")
+
+
+# AI statement: I did not use any AI for this assignment
